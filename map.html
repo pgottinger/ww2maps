@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet Quick Start Guide Example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+</head>
+<body>
+	<div id="map" style="width: 1024px; height: 800px"></div>
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+	<script>
+
+		var map = L.map('map').setView([49.4596,7.8147], 8);
+
+		L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+			maxZoom: 20,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+		}).addTo(map);
+
+		var startingLat = 49.4596;
+		
+		var markers = new Array();
+		
+		var icon = L.icon({
+			iconUrl: 'unit.png',
+			iconSize: [29,20]
+		});
+		
+		var iconAxis = L.icon({
+			iconUrl: 'unit-axis.png',
+			iconSize: [29,20]
+		});
+		
+		
+		for(var i = 0; i < 10; i++) {
+			var marker = L.marker([startingLat+i*0.1, 7.2147]);
+			marker.bindPopup("Kompanie "+ (i+1));
+			marker.setIcon(iconAxis);
+			marker.addTo(map);
+			markers.push(marker);
+		}
+		
+		for(var i = 0; i < 25; i++) {
+			var marker = L.marker([startingLat+i*0.1, 6.8147]);
+			marker.bindPopup("Company "+ (i+1));
+			marker.setIcon(icon);
+			marker.addTo(map);
+			markers.push(marker);
+		}
+		
+		function moveMarker(marker) {
+				var latLng = marker.getLatLng();
+				marker.setLatLng([latLng.lat, latLng.lng+1]); 
+				marker.update(); 
+		}
+		
+		function moveMarkers(markers) {
+			for(x in markers) {
+				moveMarker(markers[x]);
+			}
+		}
+		var i = 0;
+		var stepper = window.setInterval("doInterval()", 2000);
+		function doInterval() {
+			moveMarkers(markers);
+			i++;
+			if(i >= 3) {
+				stopInterval();
+			}
+		}
+		
+		function stopInterval() {
+				window.clearInterval(stepper);
+		}
+		
+		var popup = L.popup();
+		function onMapClick(e) {
+			popup
+				.setLatLng(e.latlng)
+				.setContent("You clicked the map at " + e.latlng.toString())
+				.openOn(map);
+		}
+
+		map.on('click', onMapClick);
+
+	</script>
+	
+	<input type="button" value="stop" onClick="stopInterval()"/>
+</body>
+</html>
