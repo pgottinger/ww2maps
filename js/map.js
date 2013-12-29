@@ -6,10 +6,11 @@ L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/
 var markers = new Array();
 
 function fillMarkers() {
-  var units = call_backend("1945-05-08",5,6,7,8);
+  var bounds = map.getBounds();
+  var units = call_backend("1945-05-01", bounds.getSouth(), bounds.getNorth(), bounds.getWest(), bounds.getEast());
   $.each(units, function(id, unit) {
     var marker = L.marker([unit.lat, unit.lng]);
-    marker.bindPopup("Name: "+unit.name+"<br>C/O: "+unit.co);
+    marker.bindPopup("Name: "+unit.name);
     marker.setIcon(icon);
     marker.addTo(map);
     markers.push(marker);
@@ -43,7 +44,7 @@ var popup = L.popup();
 function onMapClick(e) {
   popup
   .setLatLng(e.latlng)
-  .setContent("You clicked the map at " + e.latlng.toString())
+  .setContent("You clicked the map at " + map.getBounds().toBBoxString())
   .openOn(map);
 }
 
